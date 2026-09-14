@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Viya's SSC Selection Post Mock Test</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f6fb;color:#182033}
+button{font:inherit}
+.top{background:linear-gradient(135deg,#171d35,#3b4aa0);color:white;padding:14px 18px;position:sticky;top:0;z-index:10;box-shadow:0 3px 12px #0002}
+.toprow{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{font-weight:800;font-size:18px}
+.timer{font-size:22px;font-weight:800;background:#ffffff18;padding:8px 13px;border-radius:10px}
+.wrap{max-width:1100px;margin:18px auto;padding:0 12px}
+.card{background:white;border-radius:16px;padding:22px;box-shadow:0 5px 22px #17213b12;margin-bottom:16px}
+.start{text-align:center;padding:35px 20px}
+.start h1{margin:5px 0 8px;font-size:30px}
+.start .viya{font-size:20px;color:#3b4aa0;font-weight:700}
+.rules{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:22px 0}
+.rule{background:#f0f3ff;border-radius:12px;padding:12px;text-align:center}
+.rule b{display:block;font-size:20px;color:#293782}
+.primary{border:0;border-radius:11px;padding:12px 20px;background:#3b4aa0;color:#fff;font-weight:700;cursor:pointer}
+.secondary{border:1px solid #ccd2e8;border-radius:11px;padding:10px 15px;background:white;cursor:pointer}
+#exam{display:none}
+.status{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.sectionTag{font-weight:800;color:#3b4aa0}
+.progress{height:8px;background:#e8ebf4;border-radius:20px;overflow:hidden;margin-bottom:14px}
+.progress>div{height:100%;background:#3b4aa0;width:0}
+.question{font-size:19px;line-height:1.45;font-weight:700;margin-bottom:18px}
+.options{display:grid;gap:10px}
+.option{border:2px solid #e2e5ef;border-radius:12px;padding:13px;cursor:pointer;background:white;text-align:left}
+.option:hover{background:#f7f8ff}
+.option.selected{border-color:#3b4aa0;background:#eef0ff}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+.palette{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin-top:14px}
+.pbtn{border:0;border-radius:7px;padding:7px 2px;background:#e6e8ef;cursor:pointer}
+.pbtn.answered{background:#3b4aa0;color:white}
+.pbtn.current{outline:3px solid #f0b429}
+.note{font-size:13px;color:#687086}
+#result{display:none}
+.score{font-size:42px;font-weight:900;text-align:center;color:#3b4aa0}
+.resultGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.resultBox{padding:14px;background:#f3f5fa;border-radius:12px;text-align:center}
+.resultBox b{font-size:22px;display:block}
+.fun{background:#fff5d9;border-left:5px solid #f0b429;padding:12px;border-radius:10px;margin:12px 0}
+@media(max-width:700px){
+ .rules,.resultGrid{grid-template-columns:repeat(2,1fr)}
+ .palette{grid-template-columns:repeat(8,1fr)}
+ .question{font-size:17px}
+ .toprow{align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="toprow">
+    <div class="brand">🎯 Viya's SSC Selection Post Mock</div>
+    <div id="timer" class="timer">60:00</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="start" class="card start">
+    <div class="viya">💙 Viya's SSC Selection Post Mock 💙</div>
+    <h1>SSC Selection Post – Graduation & Above</h1>
+    <p>100 hard MCQs from the questions in your PDF.</p>
+    <div class="rules">
+      <div class="rule"><b>100</b>Questions</div>
+      <div class="rule"><b>200</b>Max Marks</div>
+      <div class="rule"><b>60 min</b>Total Time</div>
+      <div class="rule"><b>−0.50</b>Wrong Answer</div>
+    </div>
+    <p><b>Section timer:</b> 15 minutes each. When a section ends, it is locked and the next section starts automatically.</p>
+    <p class="note">This follows the current Selection Post Graduation & Above structure: 25 questions per section, 50 marks per section, 60 minutes total, with 15-minute sectional timing and 0.50 negative marking.</p>
+    <div class="fun">Shradich ezutane hubby 🫂🫂<br>All the best 😘😘</div>
+    <button class="primary" onclick="startTest()">🚀 START VIYA'S TEST</button>
+  </div>
+
+  <div id="exam">
+    <div class="card">
+      <div class="status">
+        <div><span id="sectionName" class="sectionTag"></span> · <span id="qNo"></span></div>
+        <div><b id="sectionTimer">15:00</b></div>
+      </div>
+      <div class="progress"><div id="progressBar"></div></div>
+      <div id="questionText" class="question"></div>
+      <div id="options" class="options"></div>
+      <div class="nav">
+        <button class="secondary" onclick="prevQ()">← Previous</button>
+        <button class="primary" onclick="nextQ()">Next →</button>
+      </div>
+    </div>
+    <div class="card">
+      <b>Question palette</b>
+      <div id="palette" class="palette"></div>
+      <p class="note">Blue = answered · Yellow outline = current question · Grey = unanswered</p>
+      <button class="primary" style="margin-top:12px" onclick="confirmSubmit()">Submit Test</button>
+    </div>
+  </div>
+
+  <div id="result" class="card">
+    <h1 style="text-align:center">🏆 Viya's Result</h1>
+    <div id="score" class="score"></div>
+    <p style="text-align:center" id="message"></p>
+    <div class="resultGrid">
+      <div class="resultBox"><b id="correct">0</b>Correct</div>
+      <div class="resultBox"><b id="wrong">0</b>Wrong</div>
+      <div class="resultBox"><b id="unattempted">0</b>Unattempted</div>
+      <div class="resultBox"><b id="accuracy">0%</b>Accuracy</div>
+    </div>
+    <h2>Section-wise score</h2>
+    <div id="sectionResults"></div>
+    <div class="fun">Midukki kutti nannyit ezutilo 😘😘<br>Odi vayoo umma tharave 😘😘<br>Thettye ellam nooki padikne😘😘</div>
+    <button class="primary" onclick="location.reload()">🔄 Try Again</button>
+  </div>
+</div>
+
+<script>
+const questions = [{"id": 1, "section": "General Intelligence", "q": "If in a certain code, TABLE is written as UBCMF, how is CHAIR written?", "options": ["DIBJS", "DIBIR", "DHBJS", "EIBJS"], "answer": "A"}, {"id": 2, "section": "General Intelligence", "q": "Find the missing number: 3, 8, 18, 38, 78, ?", "options": ["156", "158", "160", "162"], "answer": "B"}, {"id": 3, "section": "General Intelligence", "q": "A is the brother of B. C is the mother of A. D is the father of C. How is D related to B?", "options": ["Father", "Grandfather", "Maternal grandfather", "Uncle"], "answer": "C"}, {"id": 4, "section": "General Intelligence", "q": "Choose the odd one out.", "options": ["27", "64", "125", "216"], "answer": "D"}, {"id": 5, "section": "General Intelligence", "q": "If all vowels are removed from the word EDUCATION, what is the 3rd letter from the left?", "options": ["C", "T", "N", "D"], "answer": "B"}, {"id": 6, "section": "General Intelligence", "q": "Statement: All books are papers. Some papers are files. Conclusions: I. Some books are files. II. Some files are papers.", "options": ["Only I", "Only II", "Both", "Neither"], "answer": "B"}, {"id": 7, "section": "General Intelligence", "q": "A cube has all faces painted and is cut into 64 equal cubes. How many small cubes have exactly two painted faces?", "options": ["16", "24", "32", "36"], "answer": "B"}, {"id": 8, "section": "General Intelligence", "q": "Complete the series: AZ, BY, CX, DW, ?", "options": ["EV", "FU", "EW", "FV"], "answer": "A"}, {"id": 9, "section": "General Intelligence", "q": "If 1 January 2024 was Monday, what day was 1 January 2025?", "options": ["Tuesday", "Wednesday", "Thursday", "Friday"], "answer": "B"}, {"id": 10, "section": "General Intelligence", "q": "A man walks 8 km north, 6 km east, 8 km south and 2 km west. How far is he from the starting point?", "options": ["4 km", "6 km", "8 km", "10 km"], "answer": "A"}, {"id": 11, "section": "General Intelligence", "q": "In a row, Ravi is 17th from the left and 23rd from the right. How many persons are there?", "options": ["39", "40", "41", "42"], "answer": "B"}, {"id": 12, "section": "General Intelligence", "q": "Find the missing term: 2, 6, 12, 20, 30, ?", "options": ["40", "42", "44", "46"], "answer": "B"}, {"id": 13, "section": "General Intelligence", "q": "If P means '+', Q means '−', R means '×', and S means '÷', then 18 R 2 S 3 Q 4 = ?", "options": ["6", "8", "10", "12"], "answer": "B"}, {"id": 14, "section": "General Intelligence", "q": "Mirror image reasoning: if a clock shows 7:20, its mirror image time is:", "options": ["4:40", "5:40", "4:20", "5:20"], "answer": "A"}, {"id": 15, "section": "General Intelligence", "q": "Arrange in dictionary order: 1. Preach 2. Precise 3. Predict 4. Prefer", "options": ["2,3,1,4", "1,2,3,4", "2,1,3,4", "4,1,2,3"], "answer": "A"}, {"id": 16, "section": "General Intelligence", "q": "A paper is folded twice and a hole is punched through all layers. On unfolding, how many holes appear?", "options": ["2", "4", "6", "8"], "answer": "B"}, {"id": 17, "section": "General Intelligence", "q": "Find the number that does not belong: 121, 144, 169, 196, 225, 252", "options": ["144", "169", "225", "252"], "answer": "D"}, {"id": 18, "section": "General Intelligence", "q": "If SOUTH is coded as 12345 and NORTH as 67845, what is the code for THORN?", "options": ["45376", "45367", "43567", "45673"], "answer": "B"}, {"id": 19, "section": "General Intelligence", "q": "Six people sit in a circle. A sits between B and C; D sits opposite A; E sits between D and F. Who sits opposite B?", "options": ["C", "D", "E", "F"], "answer": "D"}, {"id": 20, "section": "General Intelligence", "q": "Which Venn relation best represents Doctors, Surgeons and Engineers?", "options": ["Three mutually exclusive sets", "Engineers inside Doctors", "Surgeons inside Doctors; Engineers separate", "Doctors inside Surgeons"], "answer": "C"}, {"id": 21, "section": "General Intelligence", "q": "A clock gains 5 minutes every hour. If set correctly at 8 AM, what time will it show at 8 PM?", "options": ["8:45 PM", "8:50 PM", "9:00 PM", "9:05 PM"], "answer": "B"}, {"id": 22, "section": "General Intelligence", "q": "Find the next term: 5, 11, 23, 47, 95, ?", "options": ["189", "190", "191", "193"], "answer": "C"}, {"id": 23, "section": "General Intelligence", "q": "If 'MANGO' is coded as 13-1-14-7-15, what is the code for APPLE?", "options": ["1-16-16-12-5", "1-15-16-12-5", "1-16-15-12-5", "2-16-16-12-5"], "answer": "A"}, {"id": 24, "section": "General Intelligence", "q": "A is taller than B but shorter than C. D is shorter than B but taller than E. Who is tallest?", "options": ["A", "B", "C", "D"], "answer": "C"}, {"id": 25, "section": "General Intelligence", "q": "Which figure has the highest number of lines of symmetry: square, rectangle, equilateral triangle, circle?", "options": ["Square", "Rectangle", "Equilateral triangle", "Circle"], "answer": "D"}, {"id": 26, "section": "General Awareness", "q": "The constitutional provision for the Finance Commission is:", "options": ["Article 263", "Article 280", "Article 300", "Article 312"], "answer": "B"}, {"id": 27, "section": "General Awareness", "q": "Which Schedule of the Constitution deals with allocation of seats in the Rajya Sabha?", "options": ["Third", "Fourth", "Fifth", "Seventh"], "answer": "B"}, {"id": 28, "section": "General Awareness", "q": "The 'Doctrine of Basic Structure' was established in:", "options": ["Golaknath case", "Kesavananda Bharati case", "Minerva Mills case", "Maneka Gandhi case"], "answer": "B"}, {"id": 29, "section": "General Awareness", "q": "Which vitamin is synthesized in the skin in sunlight?", "options": ["Vitamin A", "Vitamin B12", "Vitamin C", "Vitamin D"], "answer": "D"}, {"id": 30, "section": "General Awareness", "q": "The SI unit of electric resistance is:", "options": ["Volt", "Ohm", "Watt", "Coulomb"], "answer": "B"}, {"id": 31, "section": "General Awareness", "q": "Which river is known as the 'Sorrow of Bihar'?", "options": ["Ganga", "Kosi", "Son", "Gandak"], "answer": "B"}, {"id": 32, "section": "General Awareness", "q": "The permanent settlement was introduced by:", "options": ["Wellesley", "Cornwallis", "Dalhousie", "Bentinck"], "answer": "B"}, {"id": 33, "section": "General Awareness", "q": "The Battle of Plassey was fought in:", "options": ["1757", "1764", "1772", "1784"], "answer": "A"}, {"id": 34, "section": "General Awareness", "q": "Which is the largest gland in the human body?", "options": ["Pancreas", "Liver", "Thyroid", "Pituitary"], "answer": "B"}, {"id": 35, "section": "General Awareness", "q": "Repo rate is the rate at which:", "options": ["Banks lend to customers", "RBI lends to commercial banks", "Government lends to RBI", "Banks lend to RBI"], "answer": "B"}, {"id": 36, "section": "General Awareness", "q": "The 73rd Constitutional Amendment relates primarily to:", "options": ["Urban local bodies", "Panchayati Raj", "Fundamental Duties", "Cooperative societies"], "answer": "B"}, {"id": 37, "section": "General Awareness", "q": "Which soil is most suitable for cotton cultivation?", "options": ["Alluvial", "Laterite", "Black", "Red"], "answer": "C"}, {"id": 38, "section": "General Awareness", "q": "The headquarters of the International Court of Justice is in:", "options": ["Geneva", "Paris", "The Hague", "Vienna"], "answer": "C"}, {"id": 39, "section": "General Awareness", "q": "Who is associated with the discovery of the electron?", "options": ["Rutherford", "J. J. Thomson", "Chadwick", "Bohr"], "answer": "B"}, {"id": 40, "section": "General Awareness", "q": "The Green Revolution in India is most closely associated with:", "options": ["M. S. Swaminathan", "Vikram Sarabhai", "Homi Bhabha", "Norman Borlaug alone"], "answer": "A"}, {"id": 41, "section": "General Awareness", "q": "Which Article guarantees equality before law?", "options": ["14", "19", "21", "32"], "answer": "A"}, {"id": 42, "section": "General Awareness", "q": "The largest freshwater lake in India by surface area is:", "options": ["Wular Lake", "Dal Lake", "Loktak Lake", "Chilika Lake"], "answer": "A"}, {"id": 43, "section": "General Awareness", "q": "Which gas is primarily responsible for the greenhouse effect among these?", "options": ["Oxygen", "Nitrogen", "Carbon dioxide", "Argon"], "answer": "C"}, {"id": 44, "section": "General Awareness", "q": "The first session of the Constituent Assembly was held in:", "options": ["1945", "1946", "1947", "1950"], "answer": "B"}, {"id": 45, "section": "General Awareness", "q": "Which metal is liquid at room temperature?", "options": ["Sodium", "Mercury", "Aluminium", "Zinc"], "answer": "B"}, {"id": 46, "section": "General Awareness", "q": "The Tropic of Cancer passes through how many Indian states?", "options": ["6", "7", "8", "9"], "answer": "C"}, {"id": 47, "section": "General Awareness", "q": "Which institution replaced the Planning Commission?", "options": ["Finance Commission", "NITI Aayog", "GST Council", "Economic Advisory Council"], "answer": "B"}, {"id": 48, "section": "General Awareness", "q": "The study of earthquakes is called:", "options": ["Ecology", "Seismology", "Meteorology", "Geology"], "answer": "B"}, {"id": 49, "section": "General Awareness", "q": "Which Mughal emperor built the Buland Darwaza?", "options": ["Akbar", "Jahangir", "Shah Jahan", "Aurangzeb"], "answer": "A"}, {"id": 50, "section": "General Awareness", "q": "The term 'blue economy' broadly refers to sustainable use of:", "options": ["Forests", "Oceans and marine resources", "Deserts", "Mineral resources"], "answer": "B"}, {"id": 51, "section": "Quantitative Aptitude", "q": "A sum becomes ₹13,310 in 3 years at 10% compound interest annually. The principal is:", "options": ["₹10,000", "₹10,500", "₹11,000", "₹12,000"], "answer": "A"}, {"id": 52, "section": "Quantitative Aptitude", "q": "If x + 1/x = 5, then x² + 1/x² equals:", "options": ["21", "23", "25", "27"], "answer": "B"}, {"id": 53, "section": "Quantitative Aptitude", "q": "A train 180 m long crosses a pole in 9 seconds. Its speed is:", "options": ["60 km/h", "72 km/h", "80 km/h", "90 km/h"], "answer": "B"}, {"id": 54, "section": "Quantitative Aptitude", "q": "A can do a work in 12 days and B in 18 days. Working together, they finish it in:", "options": ["6.8 days", "7.2 days", "7.5 days", "8 days"], "answer": "B"}, {"id": 55, "section": "Quantitative Aptitude", "q": "A shopkeeper marks an article 40% above cost and gives 10% discount. Profit percent is:", "options": ["24%", "26%", "28%", "30%"], "answer": "A"}, {"id": 56, "section": "Quantitative Aptitude", "q": "The average of 8 numbers is 24. If one number 38 is replaced by 22, the new average is:", "options": ["21", "22", "23", "24"], "answer": "C"}, {"id": 57, "section": "Quantitative Aptitude", "q": "If 20% of A = 30% of B, then A:B is:", "options": ["2:3", "3:2", "3:4", "4:3"], "answer": "B"}, {"id": 58, "section": "Quantitative Aptitude", "q": "A mixture contains milk and water in ratio 5:2. If 14 L water is added, ratio becomes 5:4. Original mixture quantity was:", "options": ["42 L", "49 L", "56 L", "63 L"], "answer": "C"}, {"id": 59, "section": "Quantitative Aptitude", "q": "The HCF of two numbers is 12 and their LCM is 720. If one number is 144, the other is:", "options": ["48", "60", "72", "84"], "answer": "B"}, {"id": 60, "section": "Quantitative Aptitude", "q": "A man sells an article at 15% loss. Had he sold it for ₹180 more, he would gain 3%. Cost price is:", "options": ["₹900", "₹1,000", "₹1,100", "₹1,200"], "answer": "B"}, {"id": 61, "section": "Quantitative Aptitude", "q": "If sin θ = 3/5 for an acute angle, cos θ + tan θ equals:", "options": ["4/5+3/4", "3/5+4/3", "7/5", "17/12"], "answer": "A"}, {"id": 62, "section": "Quantitative Aptitude", "q": "The radius of a circle is increased by 20%. Area increases by:", "options": ["20%", "40%", "44%", "48%"], "answer": "C"}, {"id": 63, "section": "Quantitative Aptitude", "q": "A boat travels 24 km downstream in 2 hours and the same distance upstream in 3 hours. Speed of boat in still water is:", "options": ["8 km/h", "10 km/h", "12 km/h", "14 km/h"], "answer": "B"}, {"id": 64, "section": "Quantitative Aptitude", "q": "If 3x − 2y = 7 and 2x + 3y = 4, then x+y is:", "options": ["1", "2", "3", "4"], "answer": "A"}, {"id": 65, "section": "Quantitative Aptitude", "q": "A number is increased by 25% and then decreased by 20%. Net change is:", "options": ["0%", "5% increase", "5% decrease", "10% decrease"], "answer": "A"}, {"id": 66, "section": "Quantitative Aptitude", "q": "The diagonal of a square is 10√2 cm. Its area is:", "options": ["50 cm²", "100 cm²", "200 cm²", "400 cm²"], "answer": "B"}, {"id": 67, "section": "Quantitative Aptitude", "q": "A invests ₹8,000 for 12 months and B ₹12,000 for 8 months. Their profit ratio is:", "options": ["1:1", "2:3", "3:2", "4:3"], "answer": "A"}, {"id": 68, "section": "Quantitative Aptitude", "q": "A pipe fills a tank in 15 min, B in 20 min, while C empties it in 30 min. Together they fill it in:", "options": ["8 min", "9 min", "10 min", "12 min"], "answer": "C"}, {"id": 69, "section": "Quantitative Aptitude", "q": "The least number which leaves remainder 5 when divided by 12, 18 and 24 is:", "options": ["77", "149", "221", "293"], "answer": "B"}, {"id": 70, "section": "Quantitative Aptitude", "q": "If 7 men complete a work in 24 days, how many men are required to complete it in 14 days?", "options": ["10", "11", "12", "14"], "answer": "C"}, {"id": 71, "section": "Quantitative Aptitude", "q": "A car covers first half of a distance at 40 km/h and second half at 60 km/h. Average speed is:", "options": ["48", "50", "52", "54"], "answer": "A"}, {"id": 72, "section": "Quantitative Aptitude", "q": "The compound interest on ₹5,000 at 10% p.a. for 2 years exceeds simple interest by:", "options": ["₹40", "₹50", "₹60", "₹100"], "answer": "B"}, {"id": 73, "section": "Quantitative Aptitude", "q": "If a:b=3:4 and b:c=8:9, then a:c is:", "options": ["2:3", "3:2", "3:4", "4:3"], "answer": "A"}, {"id": 74, "section": "Quantitative Aptitude", "q": "A cylinder has radius 7 cm and height 10 cm. Using π=22/7, volume is:", "options": ["1,400", "1,540", "1,600", "1,760"], "answer": "B"}, {"id": 75, "section": "Quantitative Aptitude", "q": "A percentage increase of 10% followed by 10% decrease results in:", "options": ["No change", "1% increase", "1% decrease", "2% decrease"], "answer": "C"}, {"id": 76, "section": "English Language", "q": "Choose the correctly spelt word.", "options": ["Accomodation", "Accommodation", "Acommodation", "Accommadation"], "answer": "B"}, {"id": 77, "section": "English Language", "q": "Identify the error: 'Neither the manager nor his assistants was willing to accept the proposal.'", "options": ["Neither the manager", "nor his assistants", "was willing", "No error"], "answer": "C"}, {"id": 78, "section": "English Language", "q": "Choose the closest meaning of 'aberration'.", "options": ["Deviation", "Approval", "Abundance", "Agreement"], "answer": "A"}, {"id": 79, "section": "English Language", "q": "Choose the antonym of 'laconic'.", "options": ["Brief", "Concise", "Verbose", "Reticent"], "answer": "C"}, {"id": 80, "section": "English Language", "q": "Fill in: 'He has been working here ___ 2019.'", "options": ["from", "since", "for", "by"], "answer": "B"}, {"id": 81, "section": "English Language", "q": "One-word substitution: A person who can use both hands equally well.", "options": ["Ambidextrous", "Ambivalent", "Amorphous", "Anonymous"], "answer": "A"}, {"id": 82, "section": "English Language", "q": "Choose the correct passive voice: 'People speak English all over the world.'", "options": ["English is spoken all over the world.", "English was spoken all over the world.", "English has spoken all over the world.", "English speaks all over the world."], "answer": "A"}, {"id": 83, "section": "English Language", "q": "Choose the correct indirect speech: He said, 'I am busy now.'", "options": ["He said that I am busy then.", "He said that he was busy then.", "He says that he was busy now.", "He said he is busy now."], "answer": "B"}, {"id": 84, "section": "English Language", "q": "Fill in: 'The committee arrived ___ a unanimous decision.'", "options": ["on", "at", "in", "to"], "answer": "B"}, {"id": 85, "section": "English Language", "q": "Meaning of idiom 'to throw in the towel':", "options": ["To celebrate", "To surrender", "To deceive", "To delay"], "answer": "B"}, {"id": 86, "section": "English Language", "q": "Choose the correctly ordered sentence: P. because it was raining Q. the match was postponed R. heavily S. yesterday", "options": ["QPSR", "QPRS", "PQRS", "SRQP"], "answer": "A"}, {"id": 87, "section": "English Language", "q": "Choose the word closest to 'intransigent'.", "options": ["Flexible", "Uncompromising", "Generous", "Uncertain"], "answer": "B"}, {"id": 88, "section": "English Language", "q": "Spot the error: 'Each of the students have submitted their assignment.'", "options": ["Each of the students", "have submitted", "their assignment", "No error"], "answer": "B"}, {"id": 89, "section": "English Language", "q": "Fill in: 'Hardly had he reached the station ___ the train left.'", "options": ["than", "when", "then", "and"], "answer": "B"}, {"id": 90, "section": "English Language", "q": "Choose the correct sentence.", "options": ["She is senior than me.", "She is senior to me.", "She is senior from me.", "She is more senior than me."], "answer": "B"}, {"id": 91, "section": "English Language", "q": "One-word substitution: A speech delivered without preparation.", "options": ["Extempore", "Eulogy", "Epitaph", "Soliloquy"], "answer": "A"}, {"id": 92, "section": "English Language", "q": "Antonym of 'pragmatic':", "options": ["Practical", "Idealistic", "Realistic", "Utilitarian"], "answer": "B"}, {"id": 93, "section": "English Language", "q": "Choose the correct spelling:", "options": ["Conscientious", "Conscentious", "Consciencious", "Conscientous"], "answer": "A"}, {"id": 94, "section": "English Language", "q": "Fill in: 'No sooner did the bell ring ___ the students rushed out.'", "options": ["when", "than", "then", "and"], "answer": "B"}, {"id": 95, "section": "English Language", "q": "Meaning of 'a blessing in disguise':", "options": ["An obvious danger", "Something good that initially seems bad", "A false promise", "A lucky accident"], "answer": "B"}, {"id": 96, "section": "English Language", "q": "Choose the correct form: 'If I ___ you, I would reconsider the decision.'", "options": ["am", "was", "were", "be"], "answer": "C"}, {"id": 97, "section": "English Language", "q": "Choose the synonym of 'proliferate'.", "options": ["Multiply rapidly", "Decline", "Conceal", "Simplify"], "answer": "A"}, {"id": 98, "section": "English Language", "q": "Spot the error: 'The news are too good to be true.'", "options": ["The news", "are", "too good", "No error"], "answer": "B"}, {"id": 99, "section": "English Language", "q": "Choose the correct preposition: 'He is adept ___ solving complex problems.'", "options": ["in", "at", "on", "with"], "answer": "B"}, {"id": 100, "section": "English Language", "q": "Choose the correct sentence:", "options": ["Despite of the rain, they continued.", "Despite the rain, they continued.", "Despite to rain, they continued.", "Despite raining, they continued."], "answer": "B"}];
+const SECTION_TIME = 15 * 60;
+let answers = {};
+let current = 0;
+let sectionStart = 0;
+let totalSeconds = 60 * 60;
+let totalTimer = null;
+let sectionTimer = null;
+let started = false;
+
+function currentSection(){
+  return questions[current].section;
+}
+function sectionIndex(){
+  return Math.floor(current / 25);
+}
+function startTest(){
+  document.getElementById('start').style.display='none';
+  document.getElementById('exam').style.display='block';
+  started=true;
+  sectionStart=Date.now();
+  render();
+  totalTimer=setInterval(()=>{
+    totalSeconds--;
+    updateTotalTimer();
+    if(totalSeconds<=0) finishTest();
+  },1000);
+  sectionTimer=setInterval(updateSectionTimer,1000);
+}
+function updateTotalTimer(){
+  const m=Math.floor(totalSeconds/60), s=totalSeconds%60;
+  document.getElementById('timer').textContent =
+    String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function updateSectionTimer(){
+  const elapsed=Math.floor((Date.now()-sectionStart)/1000);
+  const left=Math.max(0,SECTION_TIME-elapsed);
+  const m=Math.floor(left/60), s=left%60;
+  document.getElementById('sectionTimer').textContent =
+    String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  if(left<=0) advanceSection();
+}
+function advanceSection(){
+  const oldSection=sectionIndex();
+  if(oldSection>=3){ finishTest(); return; }
+  current=(oldSection+1)*25;
+  sectionStart=Date.now();
+  render();
+  alert('⏰ Section time is over! Moving to the next section.');
+}
+function render(){
+  const q=questions[current];
+  document.getElementById('sectionName').textContent=q.section;
+  document.getElementById('qNo').textContent=`Question ${q.id} of 100`;
+  document.getElementById('progressBar').style.width=((current+1)/100*100)+'%';
+  document.getElementById('questionText').textContent=q.q;
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const letter='ABCD'[i];
+    const b=document.createElement('button');
+    b.className='option'+(answers[q.id]===letter?' selected':'');
+    b.textContent=letter+') '+opt;
+    b.onclick=()=>choose(letter);
+    box.appendChild(b);
+  });
+  renderPalette();
+}
+function choose(letter){
+  answers[questions[current].id]=letter;
+  render();
+}
+function prevQ(){
+  const start=sectionIndex()*25;
+  if(current>start){current--;render();}
+}
+function nextQ(){
+  const end=sectionIndex()*25+24;
+  if(current<end){current++;render();}
+  else if(sectionIndex()<3){
+    // The real-style sectional timer prevents going back to a completed section.
+    current=(sectionIndex()+1)*25;
+    sectionStart=Date.now();
+    render();
+  } else finishTest();
+}
+function renderPalette(){
+  const p=document.getElementById('palette');
+  p.innerHTML='';
+  const start=sectionIndex()*25, end=start+25;
+  for(let i=start;i<end;i++){
+    const b=document.createElement('button');
+    b.className='pbtn'+(answers[questions[i].id]?' answered':'')+(i===current?' current':'');
+    b.textContent=questions[i].id;
+    b.onclick=()=>{current=i;render()};
+    p.appendChild(b);
+  }
+}
+function confirmSubmit(){
+  const unanswered=questions.filter(q=>!answers[q.id]).length;
+  if(confirm(`Viya, you have ${unanswered} unanswered question(s). Submit the test?`)) finishTest();
+}
+function finishTest(){
+  if(!started)return;
+  started=false;
+  clearInterval(totalTimer); clearInterval(sectionTimer);
+  let correct=0,wrong=0,unattempted=0;
+  const sec={};
+  questions.forEach(q=>{
+    if(!sec[q.section])sec[q.section]={correct:0,wrong:0,unattempted:0};
+    const a=answers[q.id];
+    if(!a){unattempted++;sec[q.section].unattempted++;}
+    else if(a===q.answer){correct++;sec[q.section].correct++;}
+    else{wrong++;sec[q.section].wrong++;}
+  });
+  const score=correct*2-wrong*0.5;
+  const attempted=correct+wrong;
+  const accuracy=attempted?Math.round(correct/attempted*100):0;
+  document.getElementById('exam').style.display='none';
+  document.getElementById('result').style.display='block';
+  document.getElementById('score').textContent=score.toFixed(2)+' / 200';
+  document.getElementById('correct').textContent=correct;
+  document.getElementById('wrong').textContent=wrong;
+  document.getElementById('unattempted').textContent=unattempted;
+  document.getElementById('accuracy').textContent=accuracy+'%';
+  let msg = score>=160?'🔥 Outstanding, Viya! SSC topper mode!':
+            score>=130?'💪 Very strong! Keep polishing the weak areas.':
+            score>=100?'👍 Good attempt! One more serious revision can push this much higher.':
+            '📚 Don’t worry, Viya. Analyse the mistakes and attack the next mock!';
+  document.getElementById('message').textContent=msg;
+  const sr=document.getElementById('sectionResults'); sr.innerHTML='';
+  Object.entries(sec).forEach(([name,x])=>{
+    const s=x.correct*2-x.wrong*0.5;
+    sr.innerHTML+=`<div class="resultBox" style="margin:8px 0;text-align:left">
+      <b style="font-size:18px">${name}: ${s.toFixed(2)}/50</b>
+      Correct: ${x.correct} · Wrong: ${x.wrong} · Unattempted: ${x.unattempted}
+    </div>`;
+  });
+}
+window.onbeforeunload=function(e){
+  if(started){e.preventDefault();e.returnValue='Test is in progress.';}
+};
+</script>
+</body>
+</html>
